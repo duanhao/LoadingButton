@@ -1,0 +1,4 @@
+<resources>
+    <color name="loadingbtn_normal_bg_color">#577eee</color>
+    <color name="loadingbtn_txt_color">#a2a3a6</color>
+</resources>
