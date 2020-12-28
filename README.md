@@ -6,6 +6,7 @@ allprojects {
 			maven { url 'https://jitpack.io' }
 		}
 	}
+	
  2
  dependencies {
 	        implementation 'com.github.duanhao:LoadingButton:1.0.0'
