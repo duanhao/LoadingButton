@@ -1,16 +1,17 @@
 # LoadingButton
-1
 allprojects {
-		repositories {
+	repositories {
 			...
 			maven { url 'https://jitpack.io' }
 		}
-	}
+	}	
 	
- 2
  dependencies {
+ 
 	        implementation 'com.github.duanhao:LoadingButton:1.0.0'
-	}
+
+}
+
 按钮加载动画
  mLoadingBtn.startLoading(new LoadingButton.OnLoadingListener() {
             @Override
