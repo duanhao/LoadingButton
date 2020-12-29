@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ import android.widget.TextView;
  * UpdateDate：2019/1/17 上午10:31     CreateVersion：
  * UpdateDesc：
  */
-public class LoadingButton extends FrameLayout {
+public class LoadingButton extends LinearLayout {
 
     // 开始和结束Loading时的回调
     private OnLoadingListener mLoadingListener;
@@ -40,6 +41,7 @@ public class LoadingButton extends FrameLayout {
     private int mCircleColor;
     private String mTxtTitle;
     private Drawable mBgDrawable;
+    private FrameLayout mBgFrameLayout;
 
 
     public LoadingButton(Context context) {
@@ -52,39 +54,47 @@ public class LoadingButton extends FrameLayout {
 
     public LoadingButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.mContext = context;
+        mContext = context;
+        mBgDrawable = getBackground();
+        setBackground(null);
+        setGravity(Gravity.CENTER);
+        mBgFrameLayout = new FrameLayout(context);
+        mBgFrameLayout.setBackground(mBgDrawable);
+
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.LoadingButton);
         mCircleColor = typedArray.getColor(R.styleable.LoadingButton_circleBgColor, context.getColor(R.color.loadingbtn_normal_bg_color));
         mTxtTitle = typedArray.getString(R.styleable.LoadingButton_txt);
-        float txtSize = typedArray.getFloat(R.styleable.LoadingButton_txtsize, 17);
+        float txtSize = typedArray.getDimensionPixelSize(R.styleable.LoadingButton_txtsize, 16);
         int txtColor = typedArray.getColor(R.styleable.LoadingButton_txtcolor, context.getColor(R.color.loadingbtn_txt_color));
         typedArray.recycle();
+
         mLoadTxt = new TextView(mContext);
         mLoadTxt.setText(mTxtTitle);
-        mLoadTxt.setTextSize(txtSize);
+        mLoadTxt.setTextSize(TypedValue.COMPLEX_UNIT_PX,txtSize);
         mLoadTxt.setTextColor(txtColor);
-        FrameLayout.LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         mLoadTxt.setLayoutParams(params);
-        addView(mLoadTxt);
+        mBgFrameLayout.addView(mLoadTxt);
+
         init();
+
+        addView(mBgFrameLayout, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     /**
      * 初始化 属性
      */
     private void init() {
-        mBgDrawable = getBackground();
         mProgressBar = new ProgressBar(mContext);
         mProgressBar.setIndeterminateTintList(ColorStateList.valueOf(mCircleColor));
         mProgressBar.setIndeterminateTintMode(PorterDuff.Mode.SRC_ATOP);
         mProgressBar.setVisibility(INVISIBLE);
-        FrameLayout.LayoutParams params = new LayoutParams(dp2px(45), dp2px(45));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(dp2px(45), dp2px(45));
+        params.gravity = Gravity.CENTER;
         mProgressBar.setLayoutParams(params);
-        addView(mProgressBar);
-
+        mBgFrameLayout.addView(mProgressBar);
     }
-
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -93,7 +103,6 @@ public class LoadingButton extends FrameLayout {
         if (height == 0) height = getMeasuredHeight();
 
     }
-
 
     /**
      * 按钮缩成Loading的动画
@@ -104,14 +113,14 @@ public class LoadingButton extends FrameLayout {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                getLayoutParams().width = (int) animation.getAnimatedValue();
-                requestLayout();
+                mBgFrameLayout.getLayoutParams().width = (int) animation.getAnimatedValue();
+                mBgFrameLayout.requestLayout();
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                setBackground(mBgDrawable);
+                mBgFrameLayout.setBackground(mBgDrawable);
                 setEnabled(false);
                 mLoadTxt.setText("");
             }
@@ -125,15 +134,10 @@ public class LoadingButton extends FrameLayout {
     }
 
     private void showLoadingAnimation() {
-//        RotateAnimation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//        animation.setDuration(mRotateDuration);
-//        animation.setInterpolator(new LinearInterpolator());
-//        animation.setRepeatCount(-1);
-//        startAnimation(animation);
         if (mLoadingListener != null) {
             mLoadingListener.onStart();
         }
-        setBackground(null);
+        mBgFrameLayout.setBackground(null);
         mProgressBar.setVisibility(VISIBLE);
         isLoading = true;
     }
@@ -148,14 +152,14 @@ public class LoadingButton extends FrameLayout {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                getLayoutParams().width = (int) animation.getAnimatedValue();
-                requestLayout();
+                mBgFrameLayout.getLayoutParams().width = (int) animation.getAnimatedValue();
+                mBgFrameLayout.requestLayout();
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                setBackground(mBgDrawable);
+                mBgFrameLayout.setBackground(mBgDrawable);
                 setEnabled(false);
             }
 

@@ -2,8 +2,8 @@
 <resources>
     <declare-styleable name="LoadingButton">
         <attr name="circleBgColor" format="color" />
-        <attr name="txt" format="string" />
+        <attr name="txt" format="string|reference" />
         <attr name="txtcolor" format="color" />
-        <attr name="txtsize" format="float" />
+        <attr name="txtsize" format="dimension" />
     </declare-styleable>
 </resources>
