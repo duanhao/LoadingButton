@@ -35,7 +35,7 @@ allprojects {
 
         apps:txtcolor="#fff"
 
-        apps:txtsize="14" />
+        apps:txtsize="14sp" />
 
  mLoadingBtn.startLoading(new LoadingButton.OnLoadingListener() {
             @Override
