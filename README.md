@@ -11,7 +11,7 @@ allprojects {
 	
  dependencies {
  
-	        implementation 'com.github.duanhao:LoadingButton:1.0.0'
+	        implementation 'com.github.duanhao:LoadingButton:1.0.1'
 
 }
 
